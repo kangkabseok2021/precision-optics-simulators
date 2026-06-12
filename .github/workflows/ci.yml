@@ -29,3 +29,11 @@ jobs:
       run: |
         cd build
         ctest --output-on-failure
+
+    - name: Install Python Dependencies
+      run: pip install numpy matplotlib
+
+    - name: Smoke-render + analyze
+      run: |
+        ./build/mc_optical_ray_tracer/ray_tracer
+        python3 mc_optical_ray_tracer/scripts/analyze_luminance.py render.ppm
