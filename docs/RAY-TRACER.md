@@ -34,6 +34,9 @@ Path tracing works by tracing light paths backwards from the camera sensor into 
 - **Importance Sampling**: We sample scattering directions according to a cosine-weighted distribution on the hemisphere. This cancels out the geometric $\cos\theta$ term in the rendering equation, lowering numerical variance and leading to faster noise reduction.
 - **Russian Roulette**: Tracing rays to a fixed depth limits maximum bounces and biases the result, while tracing rays infinitely leads to infinite runtime. We terminate paths dynamically after depth 3 with probability $1 - q$ (where throughput $q = \max(R, G, B)$). Remaining paths are scaled by $1/q$, resulting in an mathematically unbiased estimator that terminates in finite time.
 
+> [!NOTE]
+> Detailed mathematical derivations, formulas, and error bounds for these ray tracing physics (including Möller-Trumbore coordinate solves, AABB slab checks, Snell's law refraction, Fresnel reflection coefficients, and Russian roulette unbiasedness proofs) are documented in the [Optics Mathematics Reference](OPTICS-MATH.md).
+
 ### 5. Multithreaded Execution Flow
 - **AppleClang Parallelization**: Standard C++ parallel algorithms (`std::execution::par_unseq`) are not supported natively in AppleClang.
 - **Solution**: We divide the target image canvas into rows. Each row is rendered as an asynchronous task using `std::async` and `std::future`. Threads write results concurrently to a thread-safe `LuminanceMap` which uses lock-free array index writes or localized mutex strips to prevent data races.

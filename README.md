@@ -6,7 +6,7 @@ A C++20 monorepo housing high-precision optical simulation utilities.
 
 1. **[High-Precision Optical Positioning Simulator](high_precision_optical_simulator/)** ([Detailed Documentation](docs/POSITIONING-SIMULATOR.md)): 
    - A C++20 numerical engine simulating manufacturing toolpath generation (thomas-algorithm spline solver), actuator/spindle hardware abstractions, dynamic telemetry logging, and state-machine lifecycle control.
-2. **[Monte Carlo Optical Ray Tracer for Automotive Lighting](mc_optical_ray_tracer/)** ([Detailed Documentation](docs/RAY-TRACER.md)):
+2. **[Monte Carlo Optical Ray Tracer for Automotive Lighting](mc_optical_ray_tracer/)** ([Detailed Documentation](docs/RAY-TRACER.md) | [Optics Math Reference](docs/OPTICS-MATH.md)):
    - A C++20 path tracer featuring Möller-Trumbore ray-triangle intersections, BVH/AABB spatial acceleration, Fresnel optics, cosine hemisphere sampling, and tile-based multi-threaded execution.
 
 ---
