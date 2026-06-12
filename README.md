@@ -18,6 +18,8 @@ precision-optics-simulators/
 ├── CMakeLists.txt                       # Monorepo build orchestrator
 ├── README.md                            # Project documentation
 ├── .gitignore                           # Git ignores (builds, telemetry outputs)
+├── docs/                                # Centralized documentation directory
+│   └── OPTICS-MATH.md                   # Math & physics formulas and derivations
 │
 ├── high_precision_optical_simulator/    # Positioning simulator subproject
 │   ├── CMakeLists.txt
@@ -27,7 +29,6 @@ precision-optics-simulators/
 │
 └── mc_optical_ray_tracer/               # Ray tracer subproject
     ├── CMakeLists.txt
-    ├── docs/                            # Math & physics documentation (OPTICS-MATH.md)
     ├── include/                         # Header files (geometry, optics, tracer, lighting)
     ├── src/                             # Source implementation files
     ├── scripts/                         # Python analysis scripts
