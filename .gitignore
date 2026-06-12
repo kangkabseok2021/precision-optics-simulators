@@ -1,0 +1,25 @@
+# Build and execution directories
+/build/
+/build-*/
+/out/
+/bin/
+
+# IDE files
+.vscode/
+.idea/
+*.user
+*.suo
+*.userossc
+*.sln
+*.vcxproj
+*.filters
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Test output and telemetry artifacts
+*.csv
+*.ppm
+*.png
+/high_precision_optical_simulator/tests/*.csv
