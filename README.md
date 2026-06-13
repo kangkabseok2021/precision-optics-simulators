@@ -8,6 +8,8 @@ A C++20 monorepo housing high-precision optical simulation utilities.
    - A C++20 numerical engine simulating manufacturing toolpath generation (thomas-algorithm spline solver), actuator/spindle hardware abstractions, dynamic telemetry logging, and state-machine lifecycle control.
 2. **[Monte Carlo Optical Ray Tracer for Automotive Lighting](mc_optical_ray_tracer/)** ([Detailed Documentation](docs/RAY-TRACER.md) | [Optics Math Reference](docs/OPTICS-MATH.md)):
    - A C++20 path tracer featuring Möller-Trumbore ray-triangle intersections, BVH/AABB spatial acceleration, Fresnel optics, cosine hemisphere sampling, and tile-based multi-threaded execution.
+3. **[Differential-Drive Autonomous Mobile Robot Stack (ros2_amr_stack)](ros2_amr_stack/)** ([Detailed Documentation](docs/AMR-STACK.md)):
+   - A ROS2 Humble workspace simulating a differential-drive robot end-to-end. Six framework-agnostic C++17 libraries handle kinematics, SocketCAN protocol, point cloud clustering, solvePnP marker pose estimation, EKF sensor fusion, goal tracking, and MQTT/JSON telemetry, wrapped in zero-copy intra-process component nodes.
 
 ---
 
@@ -19,6 +21,7 @@ precision-optics-simulators/
 ├── README.md                            # Project documentation
 ├── .gitignore                           # Git ignores (builds, telemetry outputs)
 ├── docs/                                # Centralized documentation directory
+│   ├── AMR-STACK.md                     # AMR stack architecture and algorithms
 │   ├── OPTICS-MATH.md                   # Math & physics formulas and derivations
 │   ├── POSITIONING-SIMULATOR.md         # Positioning simulator architecture and algorithms
 │   └── RAY-TRACER.md                    # Ray tracer features and physics algorithms
@@ -29,12 +32,18 @@ precision-optics-simulators/
 │   ├── src/                             # Source implementation files
 │   └── tests/                           # GoogleTest suite files
 │
-└── mc_optical_ray_tracer/               # Ray tracer subproject
-    ├── CMakeLists.txt
-    ├── include/                         # Header files (geometry, optics, tracer, lighting)
-    ├── src/                             # Source implementation files
-    ├── scripts/                         # Python analysis scripts
-    └── tests/                           # GoogleTest suite files
+├── mc_optical_ray_tracer/               # Ray tracer subproject
+│   ├── CMakeLists.txt
+│   ├── include/                         # Header files (geometry, optics, tracer, lighting)
+│   ├── src/                             # Source implementation files
+│   ├── scripts/                         # Python analysis scripts
+│   └── tests/                           # GoogleTest suite files
+│
+└── ros2_amr_stack/                      # AMR stack subproject
+    ├── libs/                            # Standalone C++17 libraries
+    ├── src/                             # ROS2 packages (colcon workspace)
+    ├── scripts/                         # Operations & MQTT CLI client scripts
+    └── docker/                          # Containerization (mosquitto + ROS2 stack)
 ```
 
 ---
