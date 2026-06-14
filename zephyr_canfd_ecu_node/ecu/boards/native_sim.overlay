@@ -1,0 +1,11 @@
+/ {
+	chosen {
+		zephyr,canbus = &can0;
+	};
+};
+
+&can0 {
+	status = "okay";
+	bus-speed = <500000>;
+	bus-speed-data = <2000000>;
+};

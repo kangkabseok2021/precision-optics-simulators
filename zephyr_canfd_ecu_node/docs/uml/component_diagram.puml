@@ -1,0 +1,27 @@
+@startuml component_diagram
+skinparam monochrome true
+skinparam shadowing false
+
+package "Zephyr native_sim Node (ECU)" {
+  [Physics Model] -[hidden]-> [ECU FSM]
+  [ECU FSM] --> [CAN-FD Codec]
+}
+
+package "Linux Gateway" {
+  [SocketCAN-FD Driver] --> [Gateway Codec]
+  [Gateway Codec] --> [MQTT Bridge]
+  [Gateway Codec] --> [HTTPS REST Engine]
+}
+
+database "vcan0 (Virtual CAN-FD)" as vcan
+
+[CAN-FD Codec] <--> vcan : ID 0x100 (TX) / ID 0x200 (RX)
+vcan <--> [SocketCAN-FD Driver] : ID 0x100 (RX) / ID 0x200 (TX)
+
+node "MQTT Broker (Mosquitto)" as broker
+[MQTT Bridge] <--> broker : JSON publish / command subscribe
+
+interface "HTTPS Client / Web API Client" as client
+[HTTPS REST Engine] <--> client : GET /api/telemetry/latest
+
+@enduml

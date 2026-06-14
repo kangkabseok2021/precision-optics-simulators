@@ -1,0 +1,35 @@
+@startuml state_diagram
+skinparam monochrome true
+skinparam shadowing false
+
+[*] --> INIT
+
+state INIT {
+  [*] --> ConfigureCAN
+  ConfigureCAN --> RegisterFilters : Success
+  RegisterFilters --> [*]
+}
+
+INIT --> NORMAL : Init Complete
+
+state NORMAL {
+  note "TX Telemetry at 50 Hz" as N1
+}
+
+NORMAL --> DIAGNOSTIC : CMD: REQUEST_DIAG / SET_MODE(2)
+NORMAL --> FAULT : Over-Temp / Low-Oil / Bus-Off / SET_MODE(3)
+
+state DIAGNOSTIC {
+  note "TX Telemetry at 100 Hz\nExtended diagnostic details" as N2
+}
+
+DIAGNOSTIC --> NORMAL : Timeout (5s) / SET_MODE(1)
+DIAGNOSTIC --> FAULT : Over-Temp / Low-Oil / Bus-Off / SET_MODE(3)
+
+state FAULT {
+  note "TX Telemetry at 50 Hz\nActive Fault Bitmap set\nCAN Bus-off -> can_recover()" as N3
+}
+
+FAULT --> NORMAL : CMD: CLEAR_FAULTS / SET_MODE(1)\n[Conditions Clear]
+
+@enduml

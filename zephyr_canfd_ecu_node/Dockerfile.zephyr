@@ -1,0 +1,18 @@
+FROM zephyrprojectrtos/zephyr-build:v0.26.4 AS builder
+
+WORKDIR /app
+
+COPY ./ecu /app/ecu
+
+# Setup west workspace and fetch dependencies
+RUN west init -l /app/ecu && \
+    west update
+
+# Build the native_sim executable
+RUN west build -b native_sim /app/ecu
+
+# Compact runtime container
+FROM debian:12-slim
+WORKDIR /app
+COPY --from=builder /app/build/zephyr/zephyr.exe /app/zephyr.exe
+ENTRYPOINT ["/app/zephyr.exe"]

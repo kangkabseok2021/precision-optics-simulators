@@ -28,3 +28,8 @@ endif()
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/ros2_amr_stack/libs/CMakeLists.txt")
     add_subdirectory(ros2_amr_stack/libs)
 endif()
+
+# Add the planned CAN-FD ECU Gateway only if its directory contains a CMakeLists.txt
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/zephyr_canfd_ecu_node/gateway/CMakeLists.txt")
+    add_subdirectory(zephyr_canfd_ecu_node/gateway)
+endif()

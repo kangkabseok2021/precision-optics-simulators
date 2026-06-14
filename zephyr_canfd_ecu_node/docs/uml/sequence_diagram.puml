@@ -1,0 +1,29 @@
+@startuml sequence_diagram
+skinparam monochrome true
+skinparam shadowing false
+
+actor "MQTT Client" as mqtt
+participant "Gateway MQTT" as gwmqtt
+participant "Gateway SocketCAN" as gwcan
+boundary "vcan0 Bus" as vcan
+participant "Zephyr ECU App" as ecu
+
+== Command Path (e.g. SET_THROTTLE) ==
+mqtt -> gwmqtt : Publish command/ecu/set_throttle "50"
+gwmqtt -> gwcan : Create 0x200 command frame (CMD_SET_THROTTLE, param=50)
+gwcan -> vcan : Write 0x200 frame
+vcan -> ecu : CAN ISR callback triggers
+ecu -> ecu : Message queue deferral -> FSM update\n(physics throttle target set to 50%)
+ecu -> vcan : Write 0x201 Response (CMD_SET_THROTTLE, status=SUCCESS)
+vcan -> gwcan : Read 0x201 frame
+gwcan -> gwmqtt : Optional command ack logging
+
+== Telemetry Path (50 Hz / 100 Hz Loop) ==
+ecu -> ecu : physics_model step() updates values
+ecu -> vcan : Write 0x100 BRS CAN-FD frame (48 bytes)
+vcan -> gwcan : Read 0x100 frame
+gwcan -> gwcan : Decode signals (RPM, Temp, etc.)
+gwcan -> gwmqtt : Publish telemetry/ecu/rpm "1200"
+gwmqtt -> mqtt : Receive JSON topic updates
+gwcan -> gwcan : Store latest in HTTPS ring buffer
+@enduml

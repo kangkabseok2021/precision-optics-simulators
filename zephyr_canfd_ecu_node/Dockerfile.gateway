@@ -1,0 +1,37 @@
+FROM debian:12 AS builder
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    libssl-dev \
+    libpaho-mqtt-dev \
+    nlohmann-json3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY ./gateway /app/gateway
+
+# Compile gateway
+WORKDIR /app/gateway
+RUN cmake -B build -DCMAKE_BUILD_TYPE=Release
+RUN cmake --build build -j$(nproc)
+
+# Final runtime image
+FROM debian:12-slim
+
+RUN apt-get update && apt-get install -y \
+    libssl3 \
+    libpaho-mqtt1.3 \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY --from=builder /app/gateway/build/ecu_gateway /app/ecu_gateway
+
+# Generate self-signed TLS certs for HTTPS API
+RUN openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365 -nodes \
+    -subj "/C=DE/O=Automotive/OU=Gateway/CN=localhost"
+
+ENTRYPOINT ["/app/ecu_gateway"]

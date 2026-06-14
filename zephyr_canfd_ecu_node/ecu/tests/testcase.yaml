@@ -1,0 +1,5 @@
+common:
+  tags: unit_testing
+tests:
+  ecu.unit:
+    platform_allow: unit_testing
