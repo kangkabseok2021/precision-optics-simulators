@@ -66,3 +66,4 @@ The 1/σ² combiner is the MLE-optimal linear estimator for independent Gaussian
 - **Phase 2** (planned): `rclrs` (ros2_rust) `SwarmPlannerNode` — subscribe `/mission/goals`,
   publish `/swarm/plan` (DronePathArray) and `/swarm/pose_consensus`
 - **Phase 3** (planned): Gazebo Harmonic 3-drone SITL simulation, Docker Compose, mission CLI
+
