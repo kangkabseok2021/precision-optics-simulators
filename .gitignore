@@ -18,6 +18,9 @@
 .DS_Store
 Thumbs.db
 
+# Git worktrees
+.worktrees/
+
 # Test output and telemetry artifacts
 *.csv
 *.ppm
