@@ -1,0 +1,3 @@
+[workspace]
+members = ["swarm_algorithms"]
+resolver = "2"

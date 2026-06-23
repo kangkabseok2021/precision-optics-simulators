@@ -1,0 +1,49 @@
+# Phase 2 skeleton — ROS 2 + ArduPilot SITL × 3 + Gazebo Harmonic + mavros × 3
+# Uncomment services as the rclrs node tier is implemented.
+
+version: "3.9"
+
+services:
+  # ── ArduPilot SITL instances ──────────────────────────────────────────────
+  # sitl0:
+  #   image: ardupilot/ardupilot-sitl:copter
+  #   environment:
+  #     SITL_ARGS: "-I0 --home 48.1351,11.5820,0,0"
+  #   ports: ["14550:14550/udp"]
+
+  # sitl1:
+  #   image: ardupilot/ardupilot-sitl:copter
+  #   environment:
+  #     SITL_ARGS: "-I1 --home 48.1351,11.5820,0,0"
+  #   ports: ["14560:14560/udp"]
+
+  # sitl2:
+  #   image: ardupilot/ardupilot-sitl:copter
+  #   environment:
+  #     SITL_ARGS: "-I2 --home 48.1351,11.5820,0,0"
+  #   ports: ["14570:14570/udp"]
+
+  # ── Gazebo Harmonic ───────────────────────────────────────────────────────
+  # gazebo:
+  #   image: osrf/ros:humble-desktop
+  #   environment:
+  #     DISPLAY: ":99"
+  #   depends_on: [sitl0, sitl1, sitl2]
+
+  # ── mavros × 3 ────────────────────────────────────────────────────────────
+  # mavros0:
+  #   image: mavros:humble
+  #   environment:
+  #     FCU_URL: "udp://sitl0:14550"
+  #   depends_on: [sitl0]
+
+  # ── SwarmPlannerNode (rclrs) ──────────────────────────────────────────────
+  # swarm_planner:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.ros2
+  #   depends_on: [mavros0]
+
+  placeholder:
+    image: busybox
+    command: echo "Phase 1 complete — uncomment Phase 2 services to enable ROS 2 stack"
