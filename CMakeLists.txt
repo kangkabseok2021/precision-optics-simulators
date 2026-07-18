@@ -33,3 +33,8 @@ endif()
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/zephyr_canfd_ecu_node/gateway/CMakeLists.txt")
     add_subdirectory(zephyr_canfd_ecu_node/gateway)
 endif()
+
+# Add the planned Edge AI Quadcopter Controller only if its directory contains a CMakeLists.txt
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/edge_ai_quadcopter_controller/CMakeLists.txt")
+    add_subdirectory(edge_ai_quadcopter_controller)
+endif()

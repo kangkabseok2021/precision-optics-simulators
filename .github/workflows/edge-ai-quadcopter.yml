@@ -1,0 +1,89 @@
+name: Edge AI Quadcopter Controller CI
+
+on:
+  push:
+    paths:
+      - 'edge_ai_quadcopter_controller/**'
+  pull_request:
+    paths:
+      - 'edge_ai_quadcopter_controller/**'
+
+jobs:
+  host-test:
+    name: host build + GoogleTest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: edge_ai_quadcopter_controller
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake python3 python3-numpy
+
+      - name: Regenerate model (deterministic — seeded RNG)
+        run: python3 scripts/generate_model.py
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build -j$(nproc)
+
+      - name: Run GoogleTest suite
+        run: ctest --test-dir build --output-on-failure
+
+  arm-cross:
+    name: ARM Cortex-M7 cross-compile
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: edge_ai_quadcopter_controller
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ARM GNU toolchain + Python (model regen)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi python3 python3-numpy
+
+      - name: Regenerate model (deterministic — seeded RNG)
+        run: python3 scripts/generate_model.py
+
+      - name: Configure (Cortex-M7 hard-float toolchain)
+        run: |
+          cmake -S . -B build-arm \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm-cortex-m7.cmake \
+            -DCMAKE_BUILD_TYPE=MinSizeRel
+
+      - name: Cross-compile
+        run: cmake --build build-arm -j$(nproc)
+
+      - name: Report binary size
+        run: arm-none-eabi-size build-arm/libeaq_core.a build-arm/libeaq_arm_smoke.a
+
+  benchmark:
+    name: 500us real-time deadline
+    needs: host-test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: edge_ai_quadcopter_controller
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake python3 python3-numpy
+
+      - name: Regenerate model (deterministic — seeded RNG)
+        run: python3 scripts/generate_model.py
+
+      - name: Build + run benchmark, assert <500us combined loop
+        run: ./scripts/benchmark.sh
